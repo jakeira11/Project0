@@ -26,4 +26,7 @@ public class Project0 {
         update updateAccount;            
 	}    
         
+        public static void fibonacciCalculator(){
+                
+        }
 }
