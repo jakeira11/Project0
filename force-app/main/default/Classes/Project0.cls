@@ -1,14 +1,21 @@
+/*
+Name:        Jacob Ira
+Project:     Project 0
+Description: This class is used as a holder for all assigned methods for Project 0
+Due Date:    2/6/2019
+*/
 public class Project0 {
+    
+    private static integer openParen = 40;
+    private static integer closedParen = 41;
+    private static integer openBracket = 91;
+    private static integer closedBracket = 93;
+    private static integer openCurly = 123;
+    private static integer closedCurly = 125;
 
-//Create a method that retrieves a list of all accounts and updates those accounts.
-//Create a custom field on the Account standard object called Size__c that will be a 
-//picklist containing small/medium/large
-//Create a method that retrieves a list of all accounts. 
-//If an account has between 1-1000 employees then it is classified as small.
-//If an account has between 1001-10000 employees it is classified as medium.
-//If an account has more than 10000 employees it is classified as large.
-//Update the Size__c field on each account to reflect the amount of employees in the Account.
-   
+/*
+This method checks the number of employees all accounts have and updates those accounts
+*/
 	public static void updateAccountSize( ) {
     	List<Account> updateAccount = new List<Account>();
     	for(Account a: [Select id, numberOfEmployees, Size__c
@@ -108,9 +115,41 @@ public static Integer[] rotateLeftNTimes( Integer[] inArray, Integer n) {
     return inArray;
 }
 
+/*
+This method checks to see if the inputed bracket string is balanced
+between open and closed matching brackets.
+*/
 public static Boolean bracketsAreBalanced( String s ) {
-
+    Integer[] bracketValues = s.getChars();
+    List<Integer> openBrackets = new List<Integer>();
+    for(integer i = 0; i < bracketValues.size(); i++){
+        if(bracketValues[i] == openParen || bracketValues[i] == openBracket|| bracketValues[i] == openCurly)
+            openBrackets.add(bracketValues[i]);
+        else if((bracketValues[i] == closedParen || bracketValues[i] == closedBracket || bracketValues[i] == closedCurly) && openBrackets.size() > 0)
+            if(openBrackets.size() > 0 && !isMatching(openBrackets.remove(openBrackets.size() - 1), bracketValues[i])){
+                system.debug('false');
+                return false;
+            }       
+    }
+    system.debug('True');
+    return true;
 }
+
+/*
+This method takes in 2 integers and checks to see if they match returning true if they 
+match and false if they don't match.
+*/
+private Static Boolean isMatching(integer int1, integer int2){
+    if (int1 == openParen && int2 == closedParen) 
+         return true; 
+       else if (int1 == openCurly && int2 == closedCurly) 
+         return true; 
+       else if (int1 == openBracket && int2 == closedBracket) 
+         return true; 
+       else
+         return false; 
+    } 
+
 
 /* 
  * 7. This method will find all leads that contain 'ca' in their fields. 
@@ -120,13 +159,14 @@ public static Boolean bracketsAreBalanced( String s ) {
  */
 public static void updateCALeads( ) {
     List<Lead> updateLeads = new List<Lead>();
-    for(Lead l: [SELECT city, status, description
+    for(Lead l: [SELECT state, status, description
                  FROM Lead]){
-        if(l.city == 'CA')
+        if(l.state == 'CA')
         {
             l.status = 'Closed - Not Converted';
             l.description = 'We are no longer doing business in California.';
         }
+    system.debug(l);
     updateLeads.add(l);
     }
     update updateLeads;
