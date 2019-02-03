@@ -111,4 +111,43 @@ public static Integer[] rotateLeftNTimes( Integer[] inArray, Integer n) {
 public static Boolean bracketsAreBalanced( String s ) {
 
 }
+
+/* 
+ * 7. This method will find all leads that contain 'ca' in their fields. 
+ *  If a lead is located in California(CA), change their Lead Status field to 'Closed - Not 
+ * Converted' and their description should display the message, "We are no longer doing 
+ * business in California."
+ */
+public static void updateCALeads( ) {
+    List<Lead> updateLeads = new List<Lead>();
+    for(Lead l: [SELECT city, status, description
+                 FROM Lead]){
+        if(l.city == 'CA')
+        {
+            l.status = 'Closed - Not Converted';
+            l.description = 'We are no longer doing business in California.';
+        }
+    updateLeads.add(l);
+    }
+    update updateLeads;
 }
+
+/*
+ * This method will find all Opportunities which have already passed their Close Date 
+ * and have a Stage field that is not 'Closed Won'. Since they have passed their Close Date and 
+ * they are not marked as 'Closed Won', they should be marked as 'Closed Lost'.
+ */
+public static void closePastDueOpportunities( ) {
+    List<Opportunity> stageOpportunity = new List<Opportunity>();
+        for(Opportunity o: [SELECT stageName, closeDate
+                        FROM Opportunity]){
+            if(o.closeDate < Date.Today() && o.stageName != 'Closed Won'){
+                o.StageName = 'Closed Lost';
+            stageOpportunity.add(o);
+        }
+        update stageOpportunity;
+    }
+}
+}
+
+
