@@ -188,6 +188,11 @@ public static void closePastDueOpportunities( ) {
         update stageOpportunity;
     }
 }
+	
+public static void HelloWorld(){
+   system.debug('HelloWorld!');
+}
+
 }
 
 
