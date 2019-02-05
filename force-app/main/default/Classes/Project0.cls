@@ -189,5 +189,3 @@ public static void closePastDueOpportunities( ) {
     }
 }
 }
-
-
