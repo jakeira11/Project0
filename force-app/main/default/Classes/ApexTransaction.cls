@@ -1,35 +1,47 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//Name:        Jacob Ira
+//Project:     Project 0
+//Description: This class is used to create a transaction for the account.
+//Due Date:    2/6/2019
+//////////////////////////////////////////////////////////////////////////////////////////
 public class ApexTransaction {
-    private static List<Bank_Account__C> bankAccount = new List<Bank_Account__c>();
-    
 
-    public static void fillAccounts(){
-        for(Bank_Account__C ba : [SELECT Account_Balance__c, withdrawal_balance__c, status__c From Bank_Account__c])
-            bankAccount.add(ba);
-    }
-    
-
-
-/*
-    • Check if an account is overdrawn and change the status of the account accordingly.
-    • Create a new transaction relating to the account.
-    • Update the account based on all related transactions to show current balance.
-*/
-    public static void accountOverdrawn(Account_Balance__c ab, withdrawal_balance__c withdrawal, Status__c accountStatus){
-        if(ab - withdrawal < 0)
-            accountStatus = 'Overdrawn';
-    }
-
-    public static void newTransaction(Account_Balance__c ab, withdrawal_balance__c withdrawal, deposit_Balance__c deposit){
-        if(withdrawal > 0 && ab - withdrawal > 0)
-            ab -= withdrawal;
-        else if(deposit > 0)
-            ab += deposit;
-
-    }
-
-    public static void updateAccount(){
+    //This method checks if an account is overdrawn and changes the status of the account accordingly.
+    public static Boolean accountOverdrawn(string accountID, integer withdrawAmount){
         
+            Bank_Account__C currentAccount = [Select name, id, Account_Balance__c, withdrawal_balance__c, status__c
+                       	                   From Bank_Account__C Where name = :accountID];	
+        if(currentAccount.Account_Balance__c > 0 && currentAccount.Account_Balance__c < withdrawAmount)
+            currentAccount.Status__c = 'Overdrawn';
+       	if(currentAccount.Name != null)
+        	update currentAccount;
+        return currentAccount.Status__c == 'Overdrawn';
+    }
+    
+    //This method checks the accountID provided and queries to see if there is an account
+    //that has a matching account name.  If there is and the transaction is a deposit
+    //it adds the inputted amount to the account, if there is and the transaction is a 
+    //withdrawal then it deductions the amount from the account.  Otherwise it does nothing. 
+    public static void newTransaction(string accountID, Boolean withdraw, integer amount){
+        Bank_Account__C bankAccount = [Select name, id, Account_Balance__c
+                                       	   From Bank_Account__C Where name = :accountID];
+        if(withdraw && !accountOverdrawn(accountID, amount))
+            bankAccount.Account_Balance__c -= amount;
+        else 
+            bankAccount.Account_Balance__c += amount;
+        if(bankAccount.Name != null){
+             update bankAccount;
+        }
+        updateAccount(accountID);
+    }
 
-
+    //This method checks to see if the inputted account is null or not, if it's not null
+    //then it updates the bank account.
+    public static void updateAccount(string accountID){
+        Bank_Account__C bankAccount = [Select name, id, Account_Balance__c
+                                       	   From Bank_Account__C Where name = :accountID];
+        if(bankAccount.Name != null){
+            update bankAccount;   
+        }
     }
 }

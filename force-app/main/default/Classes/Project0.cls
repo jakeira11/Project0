@@ -1,8 +1,8 @@
 /*
-Name:        Jacob Ira
-Project:     Project 0
-Description: This class is used as a holder for all assigned methods for Project 0
-Due Date:    2/6/2019
+//Name:        Jacob Ira
+//Project:     Project 0
+//Description: This class is used as a holder for all assigned methods for Project 0
+//Due Date:    2/6/2019
 */
 public class Project0 {
     
